@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mole Basics: Element Matcher</title>
+<style>
+body {
+font-family: Arial, sans-serif;
+text-align: center;
+background-color: #f0f8ff;
+}
+.element {
+display: inline-block;
+margin: 20px;
+padding: 10px;
+font-size: 18px;
+border: 2px solid #333;
+border-radius: 5px;
+background-color: #caf0f8;
+cursor: pointer;
+}
+</style>
+</head>
+<body>
+<h1>Mole Basics: Element Matcher</h1>
+<p id="question"></p>
+<div id="answers"></div>
+<p id="feedback"></p>
+<p id="score">Score: 0</p>
+
+<script>
+const elements = [
+{ name: "Hydrogen (H)", molarMass: 1 },
+{ name: "Carbon (C)", molarMass: 12 },
+{ name: "Oxygen (O)", molarMass: 16 },
+{ name: "Nitrogen (N)", molarMass: 14 },
+{ name: "Sulfur (S)", molarMass: 32 },
+{ name: "Sodium (Na)", molarMass: 23 },
+{ name: "Chlorine (Cl)", molarMass: 35.5 },
+{ name: "Calcium (Ca)", molarMass: 40 },
+{ name: "Iron (Fe)", molarMass: 55.8 },
+{ name: "Copper (Cu)", molarMass: 63.5 }
+];
+
+let score = 0;
+
+function askQuestion() {
+const question = document.getElementById('question');
+const answers = document.getElementById('answers');
+const feedback = document.getElementById('feedback');
+feedback.textContent = '';
+
+const randomElement = elements[Math.floor(Math.random() * elements.length)];
+question.textContent = `What is the molar mass of ${randomElement.name}?`;
+
+const correct = randomElement.molarMass;
+const options = generateOptions(correct);
+
+answers.innerHTML = '';
+options.forEach(option => {
+const btn = document.createElement('div');
+btn.textContent = `${option} g/mol`;
+btn.className = 'element';
+btn.onclick = () => {
+if (option === correct) {
+feedback.textContent = 'Correct!';
+score += 10;
+} else {
+feedback.textContent = `Incorrect. Correct answer: ${correct} g/mol`;
+}
+document.getElementById('score').textContent = `Score: ${score}`;
+setTimeout(askQuestion, 2000);
+};
+answers.appendChild(btn);
+});
+}
+
+function generateOptions(correct) {
+const wrongOptions = elements
+.filter(e => e.molarMass !== correct)
+.map(e => e.molarMass);
+const selectedOptions = [correct];
+
+while (selectedOptions.length < 4) {
+const option = wrongOptions[Math.floor(Math.random() * wrongOptions.length)];
+if (!selectedOptions.includes(option)) {
+selectedOptions.push(option);
+}
+}
+
+return selectedOptions.sort(() => Math.random() - 0.5);
+}
+
+askQuestion();
+</script>
+</body>
+</html>
